@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <title>Localization</title>
+</head>
+
+<body>
+    <h2>Localization</h2>
+    <button class="ui-button ui-widget ui-corner-all" id="lang-french">French</button>
+    <button class="ui-button ui-widget ui-corner-all" id="lang-german">German</button>
+    <button class="ui-button ui-widget ui-corner-all" id="lang-default">English</button>
+    <button class="ui-button ui-widget ui-corner-all" id="lang-thai">Thai</button>
+    <div id="example-table-theme"></div>
+
+
+    <script>
+        var jdata = "../tmp/data.json"
+
+        //Build Tabulator
+        var table = new Tabulator("#example-table-theme", {
+            height: "311px",
+            layout: "fitColumns",
+            pagination: "local",
+            langs: {
+                "fr-fr": { //French language definition
+                    "columns": {
+                        "name": "Nom",
+                        "progress": "Progression",
+                        "gender": "Genre",
+                        "rating": "Évaluation",
+                        "col": "Couleur",
+                        "dob": "Date de Naissance",
+                        "car": "Voiture",
+                    },
+                    "pagination": {
+                        "first": "Premier",
+                        "first_title": "Premier Page",
+                        "last": "Dernier",
+                        "last_title": "Dernier Page",
+                        "prev": "Précédent",
+                        "prev_title": "Précédent Page",
+                        "next": "Prochain",
+                        "next_title": "Prochain Page",
+                    },
+                },
+                "de-de": { //German language definition
+                    "columns": {
+                        "name": "Name",
+                        "progress": "Fortschritt",
+                        "gender": "Genre",
+                        "rating": "Geschlecht",
+                        "col": "Farbe",
+                        "dob": "Geburtsdatum",
+                        "car": "Auto",
+                    },
+                    "pagination": {
+                        "first": "Zuerst",
+                        "first_title": "Zuerst Seite",
+                        "last": "Last",
+                        "last_title": "Letzte Seite",
+                        "prev": "Zurück",
+                        "prev_title": "Zurück Seite",
+                        "next": "Nächster",
+                        "next_title": "Nächster Seite",
+                    },
+                },
+                "th": { //German language definition
+                    "columns": {
+                        "name": "ชื่อ",
+                        "progress": "ขั้นตอน",
+                        "gender": "เพศ",
+                        "rating": "คะแนน",
+                        "col": "สี",
+                        "dob": "เดือน",
+                        "car": "รถ",
+                    },
+                    "pagination": {
+                        "first": "หน้าแรก",
+                        "first_title": "Zuerst Seite",
+                        "last": "หน้าสุดท้าย",
+                        "last_title": "Letzte Seite",
+                        "prev": "ก่อนหน้า",
+                        "prev_title": "Zurück Seite",
+                        "next": "ต่อไป",
+                        "next_title": "ต่อไป",
+                    },
+                },
+
+            },
+            columns: [{
+                title: "Name",
+                field: "name",
+                width: 200
+            }, {
+                title: "Progress",
+                field: "progress",
+                width: 100,
+                sorter: "number"
+            }, {
+                title: "Gender",
+                field: "gender"
+            }, {
+                title: "Rating",
+                field: "rating",
+                width: 80
+            }, {
+                title: "Favourite Color",
+                field: "col"
+            }, {
+                title: "Date Of Birth",
+                field: "dob"
+            }, {
+                title: "Driver",
+                field: "car"
+            }, ],
+            ajaxResponse: (jdata, params, response) => {
+                return response.data
+
+            },
+
+        });
+        $("#lang-french").click(function() {
+            table.setLocale("fr-fr");
+        });
+
+        //set locale to German
+        $("#lang-german").click(function() {
+            table.setLocale("de-de");
+        });
+
+        //set default locale
+        $("#lang-default").click(function() {
+            table.setLocale("");
+        });
+        $("#lang-thai").click(function() {
+            table.setLocale("th");
+        });
+
+        table.setData(jdata);
+    </script>
+</body>
+
+</html>

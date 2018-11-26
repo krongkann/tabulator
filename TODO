@@ -1,0 +1,32 @@
+
+Todo:
+show data 1000 rows
+show Monday
+✔ Sort @done(18-11-15 16:45)
+✔ Group @done(18-11-15 16:55)
+✔ Sum Group @done(18-11-15 17:08)
+✔ Sum toltal Group @done(18-11-15 17:08)
+✔ Nested @done(18-11-15 17:26)
+next
+☐ sort and download
+
+
+next 
+☐ Reports 
+☐ Thai
+
+19/11/18
+✔ - คอลัม กรุ๊ป ตรง items  แก้ให้เป็น text สามารถ concat ได้ @done(18-11-20 10:03)
+✔ - ซ่อนได้ @done(18-11-20 10:03)
+✔ ถ้า ต้องกรุ๊ปขึ้น ข้างล่างต้องไม่ขึ้น @done(18-11-20 10:03)
+✔ delete group ตรง items @done(18-11-20 10:03)
+✔ สมารถซ่อนได้ ทั้งสองอันอยุ่ที่คอนฟิค @done(18-11-20 10:03)
+✔ สามารถเพิ่มคอนดิชั่น ในการฟีลเตอร์ @done(18-11-20 16:22)
+✔ ซอดคอลัม @done(18-11-20 16:22)
+✔ ซอดหลายฟีล @done(18-11-20 16:22)
+✔ ใส่ปุ่มในตาราง alert @done(18-11-21 09:41)
+✔ สลับคอลัม @done(18-11-20 10:13)
+✔ fozen column @done(18-11-20 17:01)
+✔ gen pdf by sort @done(18-11-21 11:14)
+☐ den pdf depend on coumn
+

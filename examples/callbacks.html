@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <title>Callbacks</title>
+</head>
+
+<body>
+    <h2>Callbacks</h2>
+    <div id="example-table-theme"></div>
+
+    <script>
+        var jdata = "../tmp/data.json"
+            //Build Tabulator
+        var table = new Tabulator("#example-table-theme", {
+            height: "311px",
+            layout: "fitColumns",
+            columns: [{
+                title: "Name",
+                field: "name",
+                sorter: "string",
+                width: 150
+            }, {
+                title: "Progress",
+                field: "progress",
+                sorter: "number",
+                align: "right",
+                formatter: "progress"
+            }, {
+                title: "Gender",
+                field: "gender",
+                width: 100,
+                sorter: "string",
+                cellClick: function(e, cell) {
+                    alert("cell clicked - " + cell.getValue())
+                }
+            }, {
+                title: "Rating",
+                field: "rating",
+                formatter: "star",
+                align: "center",
+                width: 100
+            }, {
+                title: "Favourite Color",
+                field: "col",
+                sorter: "string",
+                sortable: false
+            }, {
+                title: "Date Of Birth",
+                field: "dob",
+                sorter: "date",
+                align: "center"
+            }, {
+                title: "Driver",
+                field: "car",
+                align: "center",
+                formatter: "tickCross",
+                sorter: "boolean"
+            }, ],
+            rowClick: function(e, row) {
+                alert("Row " + row.getIndex() + " Clicked!!!!")
+            },
+            rowContext: function(e, row) {
+                alert("Row " + row.getIndex() + " Context Clicked!!!!")
+            },
+            ajaxResponse: (jdata, params, response) => {
+                return response.data
+            },
+        });
+
+        table.setData(jdata);
+    </script>
+</body>
+
+</html>

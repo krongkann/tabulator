@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <title>Movable Rows Between Tables</title>
+</head>
+
+<body>
+    <h2>Movable Rows Between Tables </h2>
+    <div id="example-table-theme"></div>
+    <h2>Drag Rows Here</h2>
+    <div id="example-table-receiver"></div>
+    <script>
+        var jdata = "../tmp/data.json"
+            //Build Tabulator
+        var table = new Tabulator("#example-table-theme", {
+            height: 311,
+            layout: "fitColumns",
+            movableRows: true,
+            movableRowsConnectedTables: "#example-table-receiver",
+            movableRowsReceiver: "add",
+            movableRowsSender: "delete",
+            placeholder: "All Rows Moved",
+            columns: [{
+                title: "Name",
+                field: "name"
+            }, ],
+            ajaxResponse: (jdata, params, response) => {
+                return response.data
+            },
+        });
+        table.setData(jdata);
+    </script>
+    <script>
+        var jdata = "tmp/data.json"
+        var table = new Tabulator("#example-table-receiver", {
+            height: 311,
+            layout: "fitColumns",
+            placeholder: "Drag Rows Here",
+            data: [],
+            columns: [{
+                title: "Name",
+                field: "name"
+            }, ],
+
+
+        });
+    </script>
+</body>
+
+</html>

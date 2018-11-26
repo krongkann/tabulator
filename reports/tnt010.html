@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Tabulator -->
+  <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+
+  <!-- Theme -->
+  <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <!-- Assets -->
+  <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+  <!-- CSV -->
+  <script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+
+  <!-- PDF -->
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js" integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.5/jspdf.plugin.autotable.js"></script>
+  <!-- Font -->
+  <!-- <script src="https://rawgit.com/sphilee/jsPDF-CustomFonts-support/master/dist/jspdf.customfonts.min.js"></script>
+    <script src="https://cdn.rawgit.com/stuehler/jsPDF-CustomFonts-support/master/dist/default_vfs.js"></script> -->
+  <title>TNT 010</title>
+</head>
+
+<body>
+  <h2>TNT 010</h2>
+  <button class="ui-button ui-widget ui-corner-all" id="download-csv">CSV</button>
+  <button class="ui-button ui-widget ui-corner-all" id="down load-json">JSON</button>
+  <button class="ui-button ui-widget ui-corner-all" id="download-xlsx">XLSX</button>
+  <button class="ui-button ui-widget ui-corner-all" id="download-pdf">PDF</button>
+  <div id="example-table-theme"></div>
+  <script type="text/javascript">
+  </script>
+
+  <script>
+    toDataURL = async (src, callback) => {
+      var xhttp = new XMLHttpRequest();
+
+      xhttp.onload = function () {
+        var fileReader = new FileReader();
+        fileReader.onloadend = function () {
+          callback(fileReader.result);
+        }
+        fileReader.readAsDataURL(xhttp.response);
+      };
+
+      xhttp.responseType = 'blob';
+      xhttp.open('GET', src, true);
+      xhttp.send();
+
+    }
+
+    var jdata = "../tmp/tnt010.json"
+    var img, obj, font, subobj, tablesub
+    toDataURL('../images/TNITY.png', (v) => {
+      img = v
+    })
+
+
+
+    var table = new Tabulator("#example-table-theme", {
+      height: "1000px",
+      pagination: "local",
+      downloadConfig: {
+        columnGroups: true, //include column groups in column headers for download
+        rowGroups: true, //do not include row groups in download
+      },
+      rowFormatter: function (row) {
+        //create and style holder elements
+        var holderEl = document.createElement("div");
+        var tableEl = document.createElement("div");
+
+        holderEl.style.boxSizing = "border-box";
+        holderEl.style.padding = "10px 30px 10px 10px";
+        holderEl.style.borderTop = "1px solid #333";
+        holderEl.style.borderBotom = "1px solid #333";
+        holderEl.style.background = "#ddd";
+
+        tableEl.style.border = "1px solid #333";
+
+        holderEl.appendChild(tableEl);
+
+        row.getElement().appendChild(holderEl);
+
+        var subTable = new Tabulator(tableEl, {
+          columns: [{
+              title: "price",
+              field: "price",
+            }, {
+              title: "price",
+              field: "qty"
+            }]
+
+            ,
+          ajaxResponse: (jdata, params, response) => {
+            subobj = row.getData().deals
+
+            return row.getData().deals
+          },
+        })
+        subTable.setData(jdata)
+        tablesub = subTable
+        return subTable
+
+      },
+      columns: [{
+        title: "orderNo",
+        field: "orderNo",
+      }, {
+        title: "Bs",
+        field: "side",
+      }, {
+        title: "OT",
+        field: "orderType"
+      }, {
+        title: "Instrument",
+        field: "instrumentName"
+      }, {
+        title: "Qty",
+        field: "qty"
+      }, {
+        title: "Price",
+        field: "price",
+        formatter: "money",
+        formatterParams: {
+          decimal: ".",
+          thousand: ",",
+          precision: 2,
+        }
+      }, {
+        title: "MAT",
+        field: "match",
+
+      }, {
+        title: "St",
+        field: "status",
+
+      }, {
+        title: "entryId",
+        field: "entryId",
+
+      }, {
+        title: "Time",
+        field: "entryDateTime",
+
+      }, {
+        title: "bt",
+        field: "bt",
+
+      }],
+      ajaxResponse: (jdata, params, response) => {
+        obj = response.data
+        return response.data.records
+      },
+      dataLoading: (data) => {
+        return _.map((data), (v, k) => {
+          return _.extend(v, {
+            price: (typeof v.price == "number") ? v.price.toFixed(2) : v.price,
+            entryDateTime: moment(v.entryDateTime).format("HH:MM:ss")
+
+          })
+        })
+
+
+      }
+
+    });
+    $("#download-csv").click(function () {
+      table.download("csv", "data.csv");
+    });
+    //trigger download of data.json file
+    $("#download-json").click(function () {
+      table.download("json", "data.json");
+    });
+    //trigger download of data.xlsx file
+    $("#download-xlsx").click(function () {
+      table.download("xlsx", "data.xlsx", {
+        sheetName: "My Data"
+      });
+    });
+    //trigger download of data.pdf file
+
+    var pageContent = ({
+      doc,
+      pageCount
+    }) => {
+
+
+      if (obj.records == 0) {
+        doc.text("No Data", 400, 200)
+      }
+      doc.addImage(img, 5, 5, 25, 25)
+      doc.text("TRINITY SECURITIES GROUP", 35, 20);
+      doc.text(obj.title, 7, 35);
+      doc.text(moment(obj.reportDate).format('MMM DD YYYY HH:MM:SS'), 7, 43);
+      doc.text("Name            :   " + obj.accountName, 7, 51)
+      doc.text("Account No   :    " + obj.accountId, 7, 59)
+      doc.text("A/O                     :   " + obj.aoId, 70, 59)
+      doc.text("Credit Available  :   " + obj.creditAvail, 70, 67)
+      doc.text("Credit Limit   :    " + obj.creditLimit, 7, 67)
+      doc.text("Acct Type     :   " + obj.acctType, 7, 75)
+      doc.text("Cust Type           :   " + obj.custType, 70, 75)
+      doc.text("Trade Date    :   " + moment(obj.tradeDate).format('DD/MM/YYYY'), 150, 59);
+
+      str = "Page             :   " + pageCount + " / " + (doc.internal.pages.length);
+      doc.text(str, 150, 43);
+      doc.setDrawColor(0, 0, 0);
+      doc.line(825, 560, 17, 560); // horizontal line
+
+      doc.setLineWidth(0.3)
+      doc.text("Total:   " + obj.records.totalAcc + "  Accounts", 17, 575)
+    }
+
+    var getColumns = (col) => {
+      return _.map(col, (v, k) => {
+
+        return _.extend(v, {
+          dataKey: v.field
+        })
+
+      })
+
+
+    }
+
+    var addDrawRow = (row, data) => {
+      data.doc.setTextColor(0, 0, 0);
+      if (row.index != 0) {
+        _.map(subobj, (v, k) => {
+            // console.log(v, "=-=");
+
+            data.doc.autoTableText(`${v.price}`, (data.settings.margin.left + data.table.width +
+                100) / 2, row.y +
+              row.height / 2, {
+                halign: 'center',
+                valign: 'middle'
+              });
+            data.doc.autoTableText(`${v.qty}`, data.settings.margin.left + data.table.width / 2,
+              row.y + row.height /
+              2, {
+                halign: 'center',
+                valign: 'middle'
+              });
+
+            data.cursor.y += 20;
+            row.height += 20
+
+          }
+
+
+
+        )
+        data.doc.text(
+          `Cond:    ${data.row.raw.cond}        ExpireDate:   ${moment(data.row.raw.expireDate).format('DD/MM/YYYY HH:MM:ss')}        StopCond:   ${data.row.raw.stopCondition}       Publish:  ${data.row.raw.publish}`,
+          8, row.y + row.height /
+          2)
+        data.doc.setDrawColor(0, 0, 0);
+        data.doc.line(825, 560, 17, 560); // horizontal line
+
+        data.doc.setLineWidth(0.3)
+        row.height -= 40
+        data.cursor.y -= 10;
+        console.log("----2", data);
+
+      }
+
+    }
+    var doc1 = () => {
+      var doc = new jsPDF();
+      doc.setFontSize(10)
+      //doc - the jsPDF document object
+
+      doc.autoTable(getColumns(table.getColumnDefinitions()), obj.records, {
+        addPageContent: pageContent,
+        tableWidth: "800",
+        drawRow: addDrawRow,
+        margin: {
+          top: 80,
+          horizontal: 7
+        },
+        styles: {
+          overflow: 'linebreak',
+          columnWidth: 'auto',
+        },
+        alternateRowStyles: {
+          fillColor: [255, 255, 255]
+        },
+        columnStyles: {
+          text: {
+            columnWidth: 'wrap'
+          },
+          fillColor: [255, 255, 255]
+        },
+        headerStyles: {
+          fillColor: [64, 64, 64]
+        },
+        bodyStyles: {
+          valign: 'top',
+          lineColor: 200,
+          fillColor: [255, 255, 255]
+        },
+      })
+
+      //return the autoTable config options object
+
+
+
+
+      return doc;
+    }
+    $("#download-pdf").click(function (e) {
+        // doc1()
+        doc1().save('table.pdf');
+      }
+
+    );
+
+    table.setData(jdata);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Tabulator -->
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+
+    <!-- Theme -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Assets -->
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+    <!-- CSV -->
+    <script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+
+    <!-- PDF -->
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
+    <!-- Font -->
+    <!-- <script src="https://rawgit.com/sphilee/jsPDF-CustomFonts-support/master/dist/jspdf.customfonts.min.js"></script>
+    <script src="https://cdn.rawgit.com/stuehler/jsPDF-CustomFonts-support/master/dist/default_vfs.js"></script>
+    <title>Download Table Data</title> -->
+
+</head>
+
+<body style="   padding: 2%">
+
+
+
+    <h2>Filter Col Tables</h2>
+    <form>
+        Field :
+        <select id="filter-field" class="target">
+            <option value="name" selected="selected">Name</option>
+            <option value="number">Number</option>
+            <option value="gender">Gender</option>
+            <option value="rating">Rating</option>
+            <option value="gender">Gender</option>
+            <option value="dob">Date Of Birth</option>
+            <option value="currency">Currency</option>
+            <option value="col">Color</option>
+        </select> Type :
+        <select id="filter-type" class="target">
+            <option value="=" selected="selected">=</option>
+            <option value="<">
+                <</option> <option value="<=">
+                    <=</option> <option value=">">>
+            </option>
+            <option value=">=">>=</option>
+            <option value="!=">!=</option>
+            <option value="like">like</option>
+        </select> Value:
+        <input id="filter-value">
+        <button class="ui-button ui-widget ui-corner-all" id="filter-clear">Clear Filter</button>
+    </form>
+
+    <div id="example-table-theme"></div>
+    <script type="text/javascript">
+    </script>
+
+    <script>
+        toDataURL = async (src, callback) => {
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function () {
+                var fileReader = new FileReader();
+                fileReader.onloadend = function () {
+                    callback(fileReader.result);
+                }
+                fileReader.readAsDataURL(xhttp.response);
+            };
+
+            xhttp.responseType = 'blob';
+            xhttp.open('GET', src, true);
+            xhttp.send();
+
+        }
+
+        var jdata = "../tmp/1000rows.json"
+        var img, obj, font
+        toDataURL('../images/TNITY.png', (v) => {
+            img = v
+        })
+
+        function customFilter(data) {
+            return data.car && data.rating < 3;
+        }
+
+
+        function updateFilter() {
+
+            var filter = $("#filter-field").val() == "function" ? customFilter : $("#filter-field").val();
+            console.log("ccc", $("#filter-value").val());
+
+            if ($("#filter-field").val() == "function") {
+                $("#filter-type").prop("disabled", true);
+                $("#filter-value").prop("disabled", true);
+            } else {
+                $("#filter-type").prop("disabled", false);
+                $("#filter-value").prop("disabled", false);
+            }
+
+            table.setFilter(filter, $("#filter-type").val(), $("#filter-value").val());
+        }
+        $("#filter-field, #filter-type").change(updateFilter);
+        $("#filter-value").keyup(updateFilter);
+
+        //Clear filters on "Clear Filters" button click
+        $("#filter-clear").click(function () {
+            $("#filter-field").val("");
+            $("#filter-type").val("=");
+            $("#filter-value").val("");
+
+            table.clearFilter();
+        });
+        $("#filter-field")
+            .selectmenu()
+            .selectmenu("menuWidget")
+        // $("#filter-type")
+        //     .selectmenu()
+        //     .selectmenu("menuWidget")
+
+
+        var table = new Tabulator("#example-table-theme", {
+            height: "900px",
+            layout: "fitColumns",
+            columns: [{
+                title: "Name",
+                field: "name",
+                width: 200,
+                align: "center",
+                editor: true
+            }, {
+                title: "Number",
+                field: "number",
+                width: 100,
+                align: "center",
+                sorter: "number"
+            }, {
+                title: "Gender",
+                align: "center",
+                field: "gender",
+                headerSortStartingDir: "desc"
+            }, {
+                title: "Rating",
+                field: "rating",
+                align: "center",
+                formatter: "star",
+                width: 80
+            }, {
+                title: "Favourite Color",
+                align: "center",
+                field: "col"
+            }, {
+                title: "Date Of Birth",
+                field: "date",
+                align: "center",
+                sorter: "date",
+                formatter: (cell, formatterParams, onRendered) => {
+                    return moment(cell.getValue()).add(543, 'years').format("DD/MM/YYYY");
+                }
+            }, {
+                title: "Currency",
+                field: "currency",
+                align: "center"
+            }, ],
+            ajaxResponse: (jdata, params, response) => {
+                obj = response.data
+                return response.data
+            },
+
+
+        });
+        //trigger download of data.csv file
+
+
+        table.setData(jdata);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="http://192.168.21.59:8080/target/target-script-min.js#anonymous"></script>
+
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <title>Filter Data </title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" />
+
+
+</head>
+
+<body>
+    <h2>33 1 </h2>
+    <form id="form">
+        Field :
+        <select id="filter-field" class="target">
+      <option value="name" selected="selected">Name</option>
+      <option value="progress">Progress</option>
+      <option value="gender">Gender</option>
+      <option value="rating">Rating</option>
+      <option value="col">Favourite Color</option>
+      <option value="dob">Date Of Birth</option>
+      <option value="car">Driver</option>
+    </select> Type :
+        <select id="filter-type" class="target">
+      <option value="=" selected="selected">=</option>
+      <option value="<">
+        <</option> <option value="<=">
+          <=</option> <option value=">">>
+      </option>
+      <option value=">=">>=</option>
+      <option value="!=">!=</option>
+      <option value="like">like</option>
+    </select> Value:
+        <input id="filter-value">
+        <button id="filter-clear">Clear Filter</button>
+    </form>
+
+    <div id="example-table-theme"></div>
+    <script>
+        var jdata = {
+            "data": [{
+                    "name": "Patrick",
+                    "progress": 68.548,
+                    "gender": "female",
+                    "rating": 0,
+                    "col": "grey",
+                    "location": "New Mexico",
+                    "dob": "June",
+                    "car": "Illinois"
+                }] // 
+                // data: jdata['data'],
+
+        }
+        var testData = "./res/libs/data.json"
+        var table = new Tabulator("#example-table-theme", {
+            height: "311px",
+            layout: "fitColumns",
+            columns: [{
+                title: "Name",
+                field: "name",
+                width: 200
+            }, {
+                title: "Progress",
+                field: "progress",
+                formatter: "progress",
+                sorter: "number"
+            }, {
+                title: "Gender",
+                field: "gender"
+            }, {
+                title: "Rating",
+                field: "rating",
+                formatter: "star",
+                align: "center",
+                width: 100
+            }, {
+                title: "Favourite Color",
+                field: "col"
+            }, {
+                title: "Date Of Birth",
+                field: "dob",
+                align: "center",
+                sorter: "date"
+            }, {
+                title: "Driver",
+                field: "car",
+                align: "center",
+                formatter: "tickCross"
+            }, ],
+            ajaxRequesting: function(url, params) {
+                console.log("=====ajax res");
+
+            },
+            ajaxResponse: (jdata, params, response) => {
+                console.log("===ajax responsxe", response.data);
+
+                return response.data
+
+            },
+            ajaxError: function(xhr, textStatus, errorThrown) {
+                console.log(textStatus, "=-textStatus=-");
+
+                //xhr - the XHR object
+                //textStatus - error type
+                //errorThrown - text portion of the HTTP status
+            },
+
+        });
+        console.log("-----------ss------");
+
+        table.setData(testData).then(function() {
+                //run code after table has been successfuly updated
+                console.log("----");
+
+            })
+            .catch(function(error) {
+                console.log(error, "==errdor=");
+
+                //handle error loading data
+            });
+        // console.log("========jdata=======", table.getData());
+
+
+        function customFilter(data) {
+            return data.car && data.rating < 3;
+        }
+
+
+        function updateFilter() {
+
+            var filter = $("#filter-field").val() == "function" ? customFilter : $("#filter-field").val();
+
+            if ($("#filter-field").val() == "function") {
+                $("#filter-type").prop("disabled", true);
+                $("#filter-value").prop("disabled", true);
+            } else {
+                $("#filter-type").prop("disabled", false);
+                $("#filter-value").prop("disabled", false);
+            }
+
+            table.setFilter(filter, $("#filter-type").val(), $("#filter-value").val());
+        }
+        $("#filter-field, #filter-type").change(updateFilter);
+        $("#filter-value").keyup(updateFilter);
+
+        //Clear filters on "Clear Filters" button click
+        $("#filter-clear").click(function() {
+            $("#filter-field").val("");
+            $("#filter-type").val("=");
+            $("#filter-value").val("");
+
+            table.clearFilter();
+        });
+        $("#form").submit(() => {
+            console.log("-=--");
+
+        })
+    </script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>

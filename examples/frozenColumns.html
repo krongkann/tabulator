@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <script src="tmp/data.json"></script>
+    <title>Frozen Columns</title>
+</head>
+
+<body>
+    <h2>Frozen Columns </h2>
+    <div id="example-table-theme"></div>
+    <script>
+        var jdata = "../tmp/data.json"
+        var table = new Tabulator("#example-table-theme", {
+            height: "311px",
+            columns: [{
+                    title: "Name",
+                    field: "name",
+                    width: 250,
+                    frozen: true
+                }, //frozen column
+                {
+                    title: "Progress",
+                    field: "progress",
+                    sorter: "number",
+                    align: "left",
+                    formatter: "progress",
+                    width: 200,
+                    editable: true
+                }, {
+                    title: "Gender",
+                    field: "gender",
+                    width: 150
+                }, {
+                    title: "Rating",
+                    field: "rating",
+                    formatter: "star",
+                    align: "center",
+                    width: 200
+                }, {
+                    title: "Date Of Birth",
+                    field: "dob",
+                    align: "center",
+                    sorter: "date"
+                }, {
+                    title: "Driver",
+                    field: "car",
+                    align: "center",
+                    formatter: "tickCross",
+                    width: 150
+                },
+            ],
+            ajaxResponse: (jdata, params, response) => {
+                return response.data
+
+            }
+        });
+
+        table.setData(jdata);
+    </script>
+</body>
+
+</html>

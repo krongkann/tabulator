@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet" />
+  <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+  <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+  <title>Add / Delete Rows</title>
+</head>
+
+<body>
+  <h2>Add / Delete Rows</h2>
+  <button class="ui-button ui-widget ui-corner-all" id="add-row">
+    Add Blank Row to bottom
+  </button>
+  <button class="ui-button ui-widget ui-corner-all" id="del-row">
+    Remove row one record
+  </button>
+  <button class="ui-button ui-widget ui-corner-all" id="clear">
+    Empty the table
+  </button>
+  <button class="ui-button ui-widget ui-corner-all" id="reset">Reset</button>
+  <div id="example-table-theme"></div>
+
+  <script>
+    var jdata = "../tmp/data.json";
+
+    //Build Tabulator
+    var table = new Tabulator("#example-table-theme", {
+      height: "311px",
+      layout: "fitColumns",
+      addRowPos: "top",
+      pagination: "local",
+      paginationSize: 6,
+      index: "rating",
+      columns: [{
+          title: "Name",
+          field: "name",
+          width: 200,
+          editor: "input"
+        },
+        {
+          title: "Progress",
+          field: "progress",
+          width: 100,
+          align: "right",
+          sorter: "number",
+          editor: "input"
+        },
+        {
+          title: "Gender",
+          field: "gender",
+          editor: "input"
+        },
+        {
+          title: "Rating",
+          field: "rating",
+          align: "center",
+          width: 80,
+          editor: "input"
+        },
+        {
+          title: "Favourite Color",
+          field: "col",
+          editor: "input"
+        },
+        {
+          title: "Date Of Birth",
+          field: "dob",
+          align: "center",
+          sorter: "date",
+          editor: "input"
+        },
+        {
+          title: "Driver",
+          field: "car",
+          align: "center",
+          editor: "input"
+        }
+      ],
+      ajaxResponse: (jdata, params, response) => {
+        return response.data;
+      }
+    });
+    table.setData(jdata);
+    addRow = (i) => {
+      table.addRow({
+        name: "bameron",
+        progress: 73.874,
+        gender: "male",
+        rating: i,
+        col: "purple",
+        location: "New Mexico",
+        dob: "June",
+        car: "New Jersey"
+      })
+    };
+    $("#add-row").click(function () {
+
+      (function myLoop(i) {
+        setTimeout(function () {
+          addRow(i)
+          if (--i) myLoop(i); //  decrement i and call myLoop again if i > 0
+        }, 3000)
+      })(10);
+    });
+    $("#del-row").click(function () {
+      table.deleteRow(1);
+    });
+    $("#clear").click(function () {
+      table.clearData();
+    });
+    $("#reset").click(function () {
+      table.setData(jdata);
+    });
+  </script>
+</body>
+
+</html>

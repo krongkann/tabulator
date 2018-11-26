@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../css/manuallyAdjustedTheme.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
+
+    <title>Font Thai</title>
+</head>
+
+<body>
+    <h2>Font Thai</h2>
+    <button class="ui-button ui-widget ui-corner-all" id="download-pdf">PDF</button>
+    <div id="example-table-theme"></div>
+
+    <script>
+        var jdata = "../tmp/dataFontThai.json"
+            //Build Tabulator
+
+        var table = new Tabulator("#example-table-theme", {
+            height: "311px",
+            clipboard: true,
+            clipboardPasteAction: "replace",
+            columns: [{
+                title: "Name",
+                field: "name",
+                width: 200,
+                editor: true
+            }, {
+                title: "Number",
+                field: "number",
+                width: 100,
+                sorter: "number"
+            }, {
+                title: "Gender",
+                field: "gender"
+            }, {
+                title: "Rating",
+                field: "rating",
+                width: 80
+            }, {
+                title: "Favourite Color",
+                field: "col"
+            }, {
+                title: "Date Of Birth",
+                field: "date",
+                align: "center",
+                sorter: "date",
+                formatter: (cell, formatterParams, onRendered) => {
+                    return moment(cell.getValue()).add(543, 'years').format("DD/MM/YYYY");
+                }
+            }, {
+                title: "Currency",
+                field: "currency",
+                align: "center"
+            }, ],
+            ajaxResponse: (jdata, params, response) => {
+                return response.data
+
+            },
+
+        });
+        $("#download-pdf").click(function(e) {
+
+            table.download("pdf", "data.pdf", {
+                orientation: "portrait"
+            })
+        })
+
+        table.setData(jdata);
+    </script>
+</body>
+
+</html>
